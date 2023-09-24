@@ -1,0 +1,28 @@
+# Use a base image with JDK (e.g., OpenJDK 11)
+FROM adoptopenjdk:11-jre-hotspot
+
+# Define environment variables for Java and Maven
+ENV MAVEN_HOME /opt/maven
+ENV MAVEN_VERSION 3.8.4
+ENV PATH $MAVEN_HOME/bin:$PATH
+
+# Install Maven
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -fsSL https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar -xzC /opt/ && \
+    ln -s /opt/apache-maven-$MAVEN_VERSION $MAVEN_HOME && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /tmp/*
+
+# Confirm that Maven and Java are installed
+RUN mvn --version && java -version
+
+# Set the working directory for your application (change this as needed)
+WORKDIR /app
+
+# Add your application files and code here (if applicable)
+# COPY . /app
+
+# Define the default command to run your application
+# CMD ["mvn", "clean", "install"]
